@@ -1,0 +1,52 @@
+import random
+from hangman_words import word_list
+from hangman_art import stages, logo
+
+lives = 6
+print(logo)
+
+# Randomly choose a word from the list
+chosen_word = random.choice(word_list)
+word_length = len(chosen_word)
+
+# Create a display with underscores
+display = ["_" for _ in chosen_word]
+guessed_letters = []
+
+game_over = False
+
+while not game_over:
+    print(f"\n{' '.join(display)}")
+    print(f"Lives left: {lives}")
+    guess = input("Guess a letter: ").lower()
+
+    # Already guessed letter
+    if guess in guessed_letters:
+        print(f"You already guessed '{guess}'. Try a different letter.")
+        continue
+
+    guessed_letters.append(guess)
+
+    # Correct guess
+    if guess in chosen_word:
+        for position in range(word_length):
+            if chosen_word[position] == guess:
+                display[position] = guess
+        print(f"Good guess: {guess}")
+    else:
+        # Incorrect guess
+        lives -= 1
+        print(f"Wrong guess: {guess} is not in the word.")
+        if lives == 0:
+            game_over = True
+            print(f"\nYou lost. The word was: {chosen_word}")
+            break
+
+    # Check win condition
+    if "_" not in display:
+        game_over = True
+        print(f"\n{' '.join(display)}")
+        print("Congratulations! You won!")
+
+    # Print hangman stage
+    print(stages[lives])
